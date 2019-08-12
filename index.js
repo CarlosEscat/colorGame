@@ -13,15 +13,21 @@ db.sync({ force: false }).then(() => console.log("Database synced"));
 
 const User = db.define("user", {
   name: Sequelize.STRING,
-  points: Sequelize.INTEGER
+  password: Sequelize.STRING,
+  points: Sequelize.INTEGER,
+  guessed: Sequelize.BOOLEAN
 });
 
 const Room = db.define("room", {
-  name: Sequelize.STRING
+  word: Sequelize.STRING,
+  color: Sequelize.STRING,
+  status: { type: Sequelize.STRING, defaultValue: "joinning" },
+  round: { type: Sequelize.INTEGER, defaultValue: 0 }
 });
 
 User.belongsTo(Room);
 Room.hasMany(User);
+Room.Users = [{ name, password, points }];
 
 const app = express();
 
