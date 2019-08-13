@@ -11,7 +11,8 @@ const User = db.define("user", {
     allowNull: false
   },
   points: Sequelize.INTEGER,
-  guessed: Sequelize.BOOLEAN
+  guessed: Sequelize.BOOLEAN,
+
 });
 
 module.exports = User;
