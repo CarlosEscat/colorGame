@@ -80,6 +80,7 @@ function factory(stream) {
         
         if (finished) {
           const round = room.round + 1
+          //same function as before
           function shuffle() { 
             return Math.floor(Math.random() * 5);  
           }
