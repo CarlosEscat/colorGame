@@ -4,6 +4,7 @@ const User = require("../user/model");
 
 const Room = db.define(
   "room", {
+    //roomName: Sequelize.STRING,
     word: Sequelize.STRING,
     color: Sequelize.STRING,
     status: { type: Sequelize.STRING, defaultValue: "joinning" },
