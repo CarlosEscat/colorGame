@@ -1,6 +1,6 @@
-// const Sequelize = require("sequelize");
-// const db = require("../db");
-// const User = require("../user/model");
+const Sequelize = require("sequelize");
+const db = require("../db");
+const User = require("../user/model");
 
 
 const Room = db.define(
@@ -18,4 +18,4 @@ Room.hasMany(User);
 //Room.Users = [{ name, password, points }];
 
 
-// module.exports = Room;
+module.exports = Room;

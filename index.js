@@ -4,17 +4,19 @@ const cors = require("cors");
 const userRouter = require("./user/router");
 const loginRouter = require('./auth/router')
 const roomFactory = require("./room/router");
+const Sse = require('json-sse');
 
 const app = express();
 
 const middleware = cors();
 app.use(middleware);
+
 const jsonParser = bodyParser.json();
 app.use(jsonParser);
 
+const stream = new Sse()
 app.use(loginRouter)
 app.use(userRouter);
-
 
 const roomRouter = roomFactory(stream);
 app.use(roomRouter);
