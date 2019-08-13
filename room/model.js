@@ -13,6 +13,7 @@ const Room = db.define(
 
 User.belongsTo(Room);
 Room.hasMany(User);
-Room.Users = [{ name, password, points }];
+//console.log('Room.users test', Room.Users)
+//Room.Users = [{ name, password, points }];
 
 module.exports = Room;

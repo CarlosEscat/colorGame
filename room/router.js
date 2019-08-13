@@ -45,6 +45,7 @@ function factory(stream) {
         const room = await Room.findByPk(request.params.id)
 
         if (room.status === 'joining') {
+          //test if this function works (maybe there has to be a parameter?)
           function shuffle() { 
             return Math.floor(Math.random() * 5);  
           }
