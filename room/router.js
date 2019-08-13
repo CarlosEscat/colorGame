@@ -1,89 +1,105 @@
-// const { Router } = require("express");
-// const Room = require("./model");
-// const router = new Router();
 
-// const words = ['red', 'green', 'blue', 'yellow']
+const { Router } = require("express");
+const Room = require("./model");
+const User = require('../user/model')
 
-// router.post(
-//   '/room',
-//   async (request, response) => {
-//     const room = await Room.create(request.body)
+function factory(stream) {
+  const router = new Router();
+  const words = ['red', 'green', 'blue', 'yellow']
 
-//     const rooms = await Room.findAll({
-//       include: [Room.id]
-//     })
+  router.post(
+    '/room',
+    async (request, response) => {
+      const room = await Room.create(request.body)
 
-//     const data = JSON.stringify(rooms)
+      const rooms = await Room.findAll()
 
-//     stream.updateInit(data)
-//     stream.send(data)
+      const data = JSON.stringify(rooms)
 
-//     response.send(room)
-//   }
-// )
+      stream.updateInit(data)
+      stream.send(data)
 
-// router.put(
-//   '/room/join/:id', (request, response) => {
-//     const room = await Room.findByPk(request.params.id)
-//     if (room.status === 'joining') {
-//         const { userId } = request.body
-//         const user = await User.findByPk(userId)
-//         const updated = await user.update({ roomId: request.params.id, points: 0 })
-//     } else {
-//       response.status(400).send('Sorry, the game has already started.')
-//     }
-//   }
-// )
+      response.send(room)
+    }
+  )
 
-// router.put(
-//   '/room/start/:id', (request, response) => {
-//     const room = await Room.findByPk(request.params.id)
-//     if (room.status === 'joining') {
-//       const shuffled = shuffle(colors)
-//       await room.update({
-//         status: 'started',
-//         color: shuffled[0],
-//         word: shuffled[1]
-//       })
-//     }
-//   }
-// )
+  router.put(
+    '/room/join/:id', 
+      async (request, response) => {
+        const room = await Room.findByPk(request.params.id)
+        if (room.status === 'joining') {
+            const { userId } = request.body
+            const user = await User.findByPk(userId)
+            const updated = await user.update({ roomId: request.params.id, points: 0 })
+            
+            stream.updateInit(updated)
+            response.send(updated)
+        } else {
+          response.status(400).send('Sorry, the game has already started. Try a different room.')
+        }
+    }
+  )
 
-// router.put(
-//   'room/guess/:id', (request, response) => {
-//     const { userId, guess } = request.body
-//     const room = await Room.findByPk(request.params.id)
-//     const user = await User.findByPk(userId)
+  router.put(
+    '/room/start/:id', 
+      async (request, response) => {
+        const room = await Room.findByPk(request.params.id)
 
-//     if (room.status === 'started' || user.guessed) {
-//       const correct = guess === room.word
-//       const points = correct
-//         ? user.points + 1
-//         : user.points - 1
+        if (room.status === 'joining') {
+          //test if this function works (maybe there has to be a parameter?)
+          function shuffle() { 
+            return Math.floor(Math.random() * 5);  
+          }
+          const shuffled = words[shuffle]
+          //updates room status in started so no nobody can get's in the room.
+          await room.update({
+            status: 'started',
+            color: shuffled[0],
+            word: shuffled[1]
+          })
+        }
+      }
+  )
 
-//     const updatedUser = await User.update({ guessed: true, points })
-//     const updatedRoom = await Room.findByPk(request.params.id)
+  router.put(
+    'room/guess/:id', 
+        async (request, response) => {
+        const { userId, guess } = request.body
+        const room = await Room.findByPk(request.params.id)
+        const user = await User.findByPk(userId)
 
-//     const finished = correct || !updatedRoom.users.some(user => !user.guessed)
-    
-//     if (finished) {
-//       const round = room.round + 1
-//       const shuffled = shuffle(colors)
+        if (room.status === 'started' || user.guessed) {
+          const correct = guess === room.word
+          const points = correct
+            ? user.points + 1
+            : user.points + 0
 
-//       const updated = round > 6
-//         ? await room.update({
-//           color: shuffled[0],
-//           word: shuffled[1],
-//         })
-//         : await room.update({ status: 'done' })
+        const updatedUser = await User.update({ guessed: true, points })
+        const updatedRoom = await Room.findByPk(request.params.id)
 
-//     response.send(updated)
-//     }
-//     }
-//   }
-// )
+        const finished = correct || !updatedRoom.users.some(user => !user.guessed)
+        
+        if (finished) {
+          const round = room.round + 1
+          //same function as before
+          function shuffle() { 
+            return Math.floor(Math.random() * 5);  
+          }
+          const shuffled = words[shuffle]
 
+          const updated = round > 6
+            ? await room.update({
+              color: shuffled[0],
+              word: shuffled[1],
+            })
+            : await room.update({ status: 'Game over!' })
 
-
-
-// module.exports = router;
+        response.send(updated)
+        stream.updateInit(updatedUser)
+        }
+        }
+      }
+  )
+  return router;
+}
+module.exports = factory;
