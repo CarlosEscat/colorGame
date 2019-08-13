@@ -1,4 +1,3 @@
-
 const { Router } = require("express");
 const Room = require("./model");
 const User = require('../user/model')
@@ -11,15 +10,23 @@ function factory(stream) {
     '/room',
     async (request, response) => {
       const room = await Room.create(request.body)
-
       const rooms = await Room.findAll()
-
       const data = JSON.stringify(rooms)
 
       stream.updateInit(data)
       stream.send(data)
 
       response.send(room)
+    }
+  )
+
+  router.get(
+    '/room',
+    async (request, response) => {
+      const rooms = await Room.findAll({ include: User.id })
+      const data = JSON.stringify(rooms)
+
+      response.send(data)
     }
   )
 
