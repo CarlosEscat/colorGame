@@ -3,6 +3,7 @@ const db = require("../db");
 const User = require("../user/model");
 
 
+
 const Room = db.define(
   "room", {
     room_name: Sequelize.STRING,
@@ -12,10 +13,10 @@ const Room = db.define(
     round: { type: Sequelize.INTEGER, defaultValue: 0 }
   });
 
+
 User.belongsTo(Room);
 Room.hasMany(User);
 //console.log('Room.users test', Room.Users)
 //Room.Users = [{ name, password, points }];
-
 
 module.exports = Room;
