@@ -12,7 +12,7 @@ router.post('/login', (req, res) => {
 
   if (!name || !password) {
     res.status(400).send({
-      message: 'Please supply a valid email and password'
+      message: 'Please supply a valid name and password'
     })
   }
   else {
@@ -25,7 +25,7 @@ router.post('/login', (req, res) => {
       .then(entity => {
         if (!entity) {
           res.status(400).send({
-            message: 'User with that email does not exist'
+            message: 'User with that name does not exist'
           })
         }
 

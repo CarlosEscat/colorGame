@@ -5,6 +5,8 @@ const userRouter = require("./user/router");
 const loginRouter = require('./auth/router')
 const roomFactory = require("./room/router");
 const Sse = require('json-sse');
+const Room = require('./room/model')
+const User = require('./user/model')
 
 const app = express();
 
@@ -21,6 +23,15 @@ app.use(userRouter);
 const roomRouter = roomFactory(stream);
 app.use(roomRouter);
 
+app.get('/stream', async (request, response) => {
+
+  const rooms = await Room.findAll({ include: [User] })
+
+  const data = JSON.stringify(rooms)
+  stream.updateInit(data)
+
+  stream.init(request, response)
+})
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on :${port}`));
