@@ -15,8 +15,10 @@ In the game you will do a game based on the Stroop-task. You will see a word and
 
 ## Technologies used
 
-### For the front-end we used the following packages:
+### For the back-end we used the following packages:
 
-*	React
-*	Redux
+*	Sequelize
+*	Express
 *	…
+
+##Want to see the front-end? Press here.

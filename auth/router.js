@@ -14,6 +14,7 @@ router.post("/login", (req, res) => {
 
   if (!name || !password) {
     res.status(400).send({
+
       message: "Please supply a valid name and password"
     });
   } else {
@@ -21,12 +22,15 @@ router.post("/login", (req, res) => {
       where: {
         name: req.body.name
       }
+
     })
       .then(entity => {
         if (!entity) {
           res.status(400).send({
+
             message: "User with that name does not exist"
           });
+
         }
 
         // 2. use bcrypt.compareSync to check the password against the stored hash

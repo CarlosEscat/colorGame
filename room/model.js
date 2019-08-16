@@ -6,7 +6,7 @@ const Room = db.define("room", {
   room_name: Sequelize.STRING,
   word: Sequelize.STRING,
   color: Sequelize.STRING,
-  status: { type: Sequelize.STRING, defaultValue: "joinning" },
+  status: { type: Sequelize.STRING, defaultValue: "joining" },
   round: { type: Sequelize.INTEGER, defaultValue: 0 }
 });
 
